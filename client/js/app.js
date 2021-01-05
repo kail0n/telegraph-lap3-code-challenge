@@ -2,125 +2,98 @@
 // SETUP
 const btn = document.querySelector('#msg-btn');
 const form = document.querySelector('#new-dog-form');
-const dogsList = document.querySelector('table');
+const postsList = document.querySelector('section');
 
 // Bind event listeners
-btn.addEventListener('click', getMessage);
-form.addEventListener('submit', submitDog);
+form.addEventListener('submit', submitPost);
 
 // Fetch all cats as soon as app is loaded
-getAllDogs();
+getAllPosts();
 
 // ********************************************
 
 // DOGS FLOW
 // index
-function getAllDogs(){
-    fetch('http://localhost:3000/dogs')
+function getAllPosts(){
+    fetch('http://localhost:3000/posts')
         .then(r => r.json())
-        .then(appendDogs)
+        .then(appendPosts)
         .catch(console.warn)
 };
 
 // create
-function submitDog(e){
+function submitPost(e){
     e.preventDefault();
 
-    const dogData = {
+    const postData = {
+        title: e.target.title.value,
         name: e.target.name.value,
-        age: e.target.age.value
+        story: e.target.story.value
+        
     };
 
     const options = { 
         method: 'POST',
-        body: JSON.stringify(dogData),
+        body: JSON.stringify(postData),
         headers: { "Content-Type": "application/json" }
     };
 
-    fetch('http://localhost:3000/dogs', options)
+    fetch('http://localhost:3000/posts', options)
         .then(r => r.json())
-        .then(appendDog)
+        .then(appendPost)
         .then(() => e.target.reset())
         .catch(console.warn)
 };
 
-function updateDog(id, tr){
-    const options = { 
-        method: 'PATCH',
-    };
-    fetch(`http://localhost:3000/dogs/${id}`, options)
-        .then(r => r.json())
-        .then(data => {
-            const { dog } = data
-            tr.querySelectorAll('td')[1].textContent = dog.age
-        })
-        .catch(console.warn)
-}
+// function updatePost(id, tr){
+//     const options = { 
+//         method: 'PATCH',
+//     };
+//     fetch(`http://localhost:3000/posts/${id}`, options)
+//         .then(r => r.json())
+//         .then(data => {
+//             const { post } = data
+//             div.querySelectorAll('td')[1].textContent = post.age
+//         })
+//         .catch(console.warn)
+// }
 
-function deleteDog(id, li){
-    console.log('deleting', id)
-    const options = { 
-        method: 'DELETE',
-    };
-    fetch(`http://localhost:3000/dogs/${id}`, options)
-        .then(li.remove())
-        .catch(console.warn)
-}
+// function deletePost(id, li){
+//     console.log('deleting', id)
+//     const options = { 
+//         method: 'DELETE',
+//     };
+//     fetch(`http://localhost:3000/posts/${id}`, options)
+//         .then(li.remove())
+//         .catch(console.warn)
+// }
 
 // helpers
-function appendDogs(data){
-    data.dogs.forEach(appendDog);
+function appendPosts(data){
+    data.posts.forEach(appendPost);
 };
 
-function appendDog(dogData){
-    const newRow = document.createElement('tr');
-    const dogLi = formatDogTr(dogData, newRow)
-    dogsList.append(newRow);
+function appendPost(postData){
+    const newRow = document.createElement('div');
+    const postContent = formatPostDiv(postData, newRow)
+    postsList.append(newRow);
 };
 
 
-function formatDogTr(dog, tr){
-    const nameTd = document.createElement('td');
-    const ageTd = document.createElement('td');
-    const delTd = document.createElement('td');
-    const uptTd = document.createElement('td');
+function formatPostDiv(post, div){
+    const titlePar = document.createElement('p');
+    const namePar = document.createElement('p');
+    const storyPar = document.createElement('p');
 
-    const delBtn = document.createElement('button');
-    const uptBtn = document.createElement('button');
-    delBtn.setAttribute('class', 'delete')
-    uptBtn.setAttribute('class', 'update')
-    delBtn.textContent = 'X';
-    uptBtn.textContent = '+';
-    delBtn.onclick = () => deleteDog(dog.id, tr);
-    uptBtn.onclick = () => updateDog(dog.id, tr);
-    delTd.append(delBtn);
-    uptTd.append(uptBtn);
 
-    nameTd.textContent = dog.name
-    ageTd.textContent = dog.age
+    titlePar.textContent = post.title;
+    namePar.textContent = post.name;
+    storyPar.textContent = post.story;
 
-    tr.append(nameTd)
-    tr.append(ageTd)
-    tr.append(delTd)
-    tr.append(uptTd)
+    div.append(titlePar)
+    div.append(namePar)
+    div.append(storyPar)
 
-    return tr
+    return div
 }
 
-// ********************************************
-
-// MESSAGE FLOW
-function getMessage(){
-    fetch('http://localhost:3000')
-        .then(r => r.text())
-        .then(renderMessage)
-        .catch(console.warn)
-};
-
-function renderMessage(msgText){
-    document.querySelector('#msg-btn').textContent = msgText;
-};
-
-
-
-// ********************************************
