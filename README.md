@@ -16,4 +16,7 @@
 * Open terminal and navigate to `server` folder.
 * Run `docker-compose up --detach` to install dependencies.
 
+### Usage
 
+* Fill out the post form
+* Click 'Publish'

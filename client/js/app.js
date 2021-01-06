@@ -10,7 +10,7 @@ const postsList = document.querySelector('section');
 form.addEventListener('submit', submitPost);
 
 // Fetch all cats as soon as app is loaded
-getAllPosts();
+// getAllPosts();
 
 // ********************************************
 
@@ -31,7 +31,6 @@ function submitPost(e){
         title: e.target.title.value,
         author_name: e.target.author_name.value,
         story: e.target.story.value
-        
     };
 
     const options = { 
@@ -46,8 +45,8 @@ function submitPost(e){
         .catch(console.warn)
 };
 
-function displayPost(id){
-    fetch(`http://localhost:3000/posts/${id}`)
+function displayPost(data){
+    fetch(`http://localhost:3000/posts/${data.id}`)
         .then(r => r.json())
         .then(data => {
             appendPost(data)
@@ -82,7 +81,7 @@ function appendPost(data){
     const newDiv = document.createElement('div');
     const postContent = formatdiv(data, newDiv)
     postsList.append(newDiv);
-    fs.writeFile(`/${data.id}`, postContent, (error) => { /* handle error */ });
+    // fs.writeFile(`/${data.id}`, postContent, (error) => { /* handle error */ });
     window.location.href=`/${data.id}`;
 };
 

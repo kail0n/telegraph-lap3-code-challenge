@@ -45,11 +45,11 @@ class Post {
         });
     }
 
-    static create(title, author_name, story){
+    static create(id, title, author_name, story){
         return new Promise (async (resolve, reject) => {
             try {
                 let postData = await db.run(SQL`INSERT INTO posts (title, author_name, story) VALUES (${title}, ${author_name}, ${story}) RETURNING *;`);
-                let newPost = new Post(postData.rows[0]);
+                let newPost = new Post(postData.rows[0]);                
                 resolve (newPost);
             } catch (err) {
                 reject('Error creating Post');
