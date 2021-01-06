@@ -1,3 +1,5 @@
+// const fs = require('fs');
+
 // ********************************************
 // SETUP
 const btn = document.querySelector('#msg-btn');
@@ -25,38 +27,35 @@ function getAllPosts(){
 function submitPost(e){
     e.preventDefault();
 
-    const postData = {
+    const data = {
         title: e.target.title.value,
-        name: e.target.name.value,
+        author_name: e.target.author_name.value,
         story: e.target.story.value
         
     };
 
     const options = { 
         method: 'POST',
-        body: JSON.stringify(postData),
+        body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" }
     };
 
     fetch('http://localhost:3000/posts', options)
         .then(r => r.json())
-        .then(appendPost)
-        .then(() => e.target.reset())
+        .then(displayPost)
         .catch(console.warn)
 };
 
-// function updatePost(id, tr){
-//     const options = { 
-//         method: 'PATCH',
-//     };
-//     fetch(`http://localhost:3000/posts/${id}`, options)
-//         .then(r => r.json())
-//         .then(data => {
-//             const { post } = data
-//             div.querySelectorAll('td')[1].textContent = post.age
-//         })
-//         .catch(console.warn)
-// }
+function displayPost(id){
+    fetch(`http://localhost:3000/posts/${id}`)
+        .then(r => r.json())
+        .then(data => {
+            appendPost(data)
+            // const { post } = data
+            // div.querySelectorAll('td')[1].textContent = post.age
+        })
+        .catch(console.warn)
+}
 
 // function deletePost(id, li){
 //     console.log('deleting', id)
@@ -73,21 +72,32 @@ function appendPosts(data){
     data.posts.forEach(appendPost);
 };
 
-function appendPost(postData){
-    const newRow = document.createElement('div');
-    const postContent = formatPostDiv(postData, newRow)
-    postsList.append(newRow);
+// function appendPost(data){
+//     const newDiv = document.createElement('div');
+//     const postContent = formatdiv(data, newDiv)
+//     postsList.append(newDiv);
+// };
+
+function appendPost(data){
+    const newDiv = document.createElement('div');
+    const postContent = formatdiv(data, newDiv)
+    postsList.append(newDiv);
+    fs.writeFile(`/${data.id}`, postContent, (error) => { /* handle error */ });
+    window.location.href=`/${data.id}`;
 };
 
 
-function formatPostDiv(post, div){
+function formatdiv(post, div){
     const titlePar = document.createElement('p');
     const namePar = document.createElement('p');
     const storyPar = document.createElement('p');
 
+    titlePar.setAttribute('id', 'title')
+    namePar.setAttribute('id', 'author_name')
+    storyPar.setAttribute('id', 'story')
 
     titlePar.textContent = post.title;
-    namePar.textContent = post.name;
+    namePar.textContent = post.author_name;
     storyPar.textContent = post.story;
 
     div.append(titlePar)
@@ -96,4 +106,3 @@ function formatPostDiv(post, div){
 
     return div
 }
-

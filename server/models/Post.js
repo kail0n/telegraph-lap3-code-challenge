@@ -4,8 +4,9 @@ const SQL = require("sql-template-strings");
 class Post {
     constructor(data){
         this.id = data.id
-        this.name = data.name
-        this.age = data.age
+        this.title = data.title
+        this.author_name = data.author_name
+        this.story = data.story
     }
 
     static get all() {
@@ -35,7 +36,7 @@ class Post {
     static findByOwner (id) {
         return new Promise (async (resolve, reject) => {
             try {
-                let postsData = await db.run(SQL`SELECT * FROM posts WHERE ownerId = ${id};`);
+                let postsData = await db.run(SQL`SELECT * FROM posts WHERE id = ${id};`);
                 const posts = postsData.rows.map(d => new Post(d))
                 resolve (posts);
             } catch (err) {
@@ -44,10 +45,10 @@ class Post {
         });
     }
 
-    static create(name, age){
+    static create(title, author_name, story){
         return new Promise (async (resolve, reject) => {
             try {
-                let postData = await db.run(SQL`INSERT INTO posts (name, age) VALUES (${name}, ${age}) RETURNING *;`);
+                let postData = await db.run(SQL`INSERT INTO posts (title, author_name, story) VALUES (${title}, ${author_name}, ${story}) RETURNING *;`);
                 let newPost = new Post(postData.rows[0]);
                 resolve (newPost);
             } catch (err) {
@@ -55,30 +56,6 @@ class Post {
             }
         });
     }
-
-    update() {
-        return new Promise (async (resolve, reject) => {
-            try {
-                let updatedPostData = await db.run(SQL`UPDATE posts SET age = age + 1 WHERE id = ${this.id} RETURNING *;`);
-                let updatedPost = new Post(updatedPostData.rows[0]);
-                resolve (updatedPost);
-            } catch (err) {
-                reject('Error updating Post');
-            }
-        });
-    }
-
-    destroy(){
-        return new Promise(async(resolve, reject) => {
-            try {
-                await db.run(SQL`DELETE FROM posts WHERE id = ${this.id};`);
-                resolve('Post was deleted')
-            } catch (err) {
-                reject('Post could not be deleted')
-            }
-        })
-    }
-
 }
 
 module.exports = Post;
