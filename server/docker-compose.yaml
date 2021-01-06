@@ -1,0 +1,34 @@
+version: '3'
+services:
+  server:
+    image: node:12.18.4
+    working_dir: /server
+    ports: 
+      - 3000:3000
+    environment: 
+      - PGUSER=futureproof
+      - PGHOST=db
+      - PGPASSWORD=postspass
+      - PGDATABASE=posts
+      - PGPORT=5432
+    depends_on:
+      - db
+    volumes:
+      - type: bind
+        source: ./
+        target: /server
+    command: bash -c "npm install && npm start"
+
+  db:
+    image: postgres:latest
+    ports:
+      - 35432:5432
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+      - "./db/seeds.sql:/docker-entrypoint-initdb.d/seeds.sql:ro"
+    environment: 
+      - POSTGRES_DB=posts
+      - POSTGRES_USER=futureproof
+      - POSTGRES_PASSWORD=postspass
+volumes:
+  dbdata:
