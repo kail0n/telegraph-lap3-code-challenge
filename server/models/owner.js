@@ -1,7 +1,7 @@
 const db = require ('../db/config')
 const SQL = require("sql-template-strings");
 
-const Dog = require("./dog")
+const Dog = require("./Post")
 
 
 class Owner {
@@ -14,7 +14,7 @@ class Owner {
     static findById (id) {
         return new Promise (async (resolve, reject) => {
             try {
-                let ownerData = await db.run(SQL`SELECT * FROM owners WHERE id = ${id};`);
+                let ownerData = await db.run(SQL`SELECT * FROM posts WHERE id = ${id};`);
                 let owner = new Owner(ownerData.rows[0]);
                 resolve (owner);
             } catch (err) {
@@ -26,7 +26,7 @@ class Owner {
     get dogs(){
         return new Promise (async (resolve, reject) => {
             try {
-                const dogsData = await db.run(SQL`SELECT * FROM dogs WHERE owner_id = ${this.id}`);
+                const dogsData = await db.run(SQL`SELECT * FROM posts WHERE id = ${this.id}`);
                 const dogs = dogsData.rows.map(d => new Dog(d));
                 resolve(dogs);
             } catch (err) {

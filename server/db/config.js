@@ -1,6 +1,6 @@
 const { Pool } = require("pg");
 
-const pool = new Pool({ database: 'shelter'});
+const pool = new Pool({ database: 'posts'});
 
 
 function run(q, values, callback){

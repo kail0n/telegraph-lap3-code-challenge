@@ -5,10 +5,10 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-const dogRoutes = require('./controllers/dogs')
+const postsRoutes = require('./controllers/posts')
 const ownerRoutes = require('./controllers/owners')
 
-server.use('/dogs', dogRoutes)
+server.use('/posts', postsRoutes)
 server.use('/owners', ownerRoutes)
 
 const port = process.env.PORT || 3000;

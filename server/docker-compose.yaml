@@ -8,8 +8,8 @@ services:
     environment: 
       - PGUSER=futureproof
       - PGHOST=db
-      - PGPASSWORD=shelterpass
-      - PGDATABASE=shelter
+      - PGPASSWORD=postspass
+      - PGDATABASE=posts
       - PGPORT=5432
     depends_on:
       - db
@@ -27,8 +27,8 @@ services:
       - "dbdata:/var/lib/postgresql/data"
       - "./db/seeds.sql:/docker-entrypoint-initdb.d/seeds.sql:ro"
     environment: 
-      - POSTGRES_DB=shelter
+      - POSTGRES_DB=posts
       - POSTGRES_USER=futureproof
-      - POSTGRES_PASSWORD=shelterpass
+      - POSTGRES_PASSWORD=postspass
 volumes:
   dbdata:
